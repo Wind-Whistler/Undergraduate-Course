@@ -1,0 +1,51 @@
+1.1. In the Prostate data, using our main split into two sets (set.seed(120401002)), use
+a GAM with a smoother on all of the explanatory variables. Do this for Set 1 only.
+There are a few issues with doing this:
+• There are limited numbers of levels for svi and gleason. These need to be
+included as “parametric” (i.e. linear) terms rather than as spline fits. This means
+do not use s() functions on them in the formula description.
+• The default fit of the model with all variables will fail, with the message
+Error in gam(data = prostate[which(set == 1), ], lpsa ~ s(lcavol)
++ s(lweight) + :
+Model has more coefficients than data
+• This means that the model is overspecified, because the sum of DF in all the
+terms surpasses the sample size. To resolve this, note that backward elimination
+in a linear regression would eliminate lbph first. Temporarily remove this term
+from the model. The fit should work now.
+• But keep issue this in mind, because it is a limitation of GAM in data where n/p
+is not huge.
+(a) Report the p-values for each term in the model. I do not take these p-values
+too literally, but they do give an idea of the relative importance of the terms.
+Compare the variables’ importance to what other variable selection methods have
+suggested.
+(b) Use the extractAIC() function to obtain the effective DF and BIC value for this
+model1
+. Report the DF produced by gam() for all the variables present in this
+model and confirm that their sum is the number of DF reported by extractAIC.
+(c) We want to reduce the model to a more parsimonious one. Unfortunately, I
+don’t know of a way to do this automatically. Instead, use backward elimination
+as described below to create a sequence of models representing a complete path
+through the variable space from full to empty. Use the p-values to select the least
+important variable at each step.
+i. At the first step, eliminate the least important variable from the first GAM
+fit, but replace it with the one left out earlier, lbph. Then proceed with the
+manual backward elimination from there.
+A. Report the path (which variables are in/out at each step?).
+B. Use the extractAIC() function to obtain the effective DF and BIC value
+for each model in the path.
+ii. Which model does BIC suggest is best?
+iii. Compute the MSPE on Set 2 for the best model. How does this best GAM
+model compare to previous models we’ve seen?
+(d) Replace all terms in the final model chosen in (c) with parametric linear terms
+and refit. This is just regression, but you can still use gam() to do it. Get out
+the BIC for this model. This is another way to address how well GAM works
+compared to the linear model. Does the use of flexible splines seem to be an
+improvement over the linear model according to BIC?
+
+2.In the Abalone data, use the previously split single training set (set.seed(29003092)to run neural nets (nnet())with all combinations of(1,3.5.8. 12. and 20)hiddennodes, and (0,0.01.0.1. 1. and 2)decay. (I recommend restarting the algorithm severaltimes for each combination to ensure a good model).
+(a)Present 3 tables, each with size as rows and decay as columns:i. In-sample sMSEii. Test error MSPEs
+iii. MSPE/sMSE ratio
+(b)Comment on the how overfitting in the NN is infuenced by size and decayc)Treating the test set as if it were a validation set, suppose you wanted to trysome “fne tuning" of the parameters. Is there an apparent range where it mightbe fruitful to explore more, or is there already a relatively fat region around theminimum? (You do not have to actually do the tuning. Reply with a region whereyou would either do more tuning or select an existing combination of parameters.
+
+3.For the Wheat data,use a neural net for classifcation. Carefully tune the networkrepeating the fitting 10 times per parameter combination and using the result with thebest training error to represent that combination.
+(a)Explain your tuning process, including how validation error was computed andwhat parameter combinations you used.(b)Compute test error on the test set and compare the results to the previous results

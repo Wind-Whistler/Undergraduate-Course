@@ -1,0 +1,1 @@
+stepwise, pe(0.05) pr(0.1): regress y var1 var2 var3 var4
